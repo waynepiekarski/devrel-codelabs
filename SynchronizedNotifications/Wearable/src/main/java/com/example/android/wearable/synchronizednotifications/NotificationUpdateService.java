@@ -88,49 +88,19 @@ public class NotificationUpdateService extends WearableListenerService
         mGoogleApiClient.connect();
     }
 
-    @Override
-    public void onDataChanged(DataEventBuffer dataEvents) {
-        for (DataEvent dataEvent : dataEvents) {
-            if (dataEvent.getType() == DataEvent.TYPE_CHANGED) {
-                DataMap dataMap =
-                        DataMapItem.fromDataItem(dataEvent.getDataItem()).getDataMap();
-                String content = dataMap.getString(Constants.KEY_CONTENT);
-                String title = dataMap.getString(Constants.KEY_TITLE);
-                if (Constants.WATCH_ONLY_PATH.equals(dataEvent.getDataItem().getUri().getPath())) {
-                    buildWearableOnlyNotification(title, content, false);
-                }
-            } else if (dataEvent.getType() == DataEvent.TYPE_DELETED) {
-                if (Constants.BOTH_PATH.equals(dataEvent.getDataItem().getUri().getPath())) {
-                    // Dismiss the corresponding notification
-                    ((NotificationManager) getSystemService(NOTIFICATION_SERVICE))
-                            .cancel(Constants.BOTH_ID);
-                }
-            }
-        }
-    }
+    /**
+     * INSERT CODE HERE FOR onDataChanged
+     */
 
+    
     /**
      * Builds a simple notification on the wearable.
      */
-    private void buildWearableOnlyNotification(String title, String content,
-                                               boolean withDismissal) {
-        Notification.Builder builder = new Notification.Builder(this)
-                .setSmallIcon(R.drawable.ic_launcher)
-                .setContentTitle(title)
-                .setContentText(content);
 
-        if (withDismissal) {
-            Intent dismissIntent = new Intent(Constants.ACTION_DISMISS);
-            dismissIntent.putExtra(Constants.KEY_NOTIFICATION_ID, Constants.BOTH_ID);
-            PendingIntent pendingIntent = PendingIntent
-                    .getService(this, 0, dismissIntent,
-                            PendingIntent.FLAG_UPDATE_CURRENT);
-            builder.setDeleteIntent(pendingIntent);
-        }
+    /**
+     * INSERT CODE HERE FOR buildWearableOnlyNotification
+     */
 
-        ((NotificationManager) getSystemService(NOTIFICATION_SERVICE))
-                .notify(Constants.WATCH_ONLY_ID, builder.build());
-    }
 
     @Override
     public void onConnected(Bundle bundle) {
