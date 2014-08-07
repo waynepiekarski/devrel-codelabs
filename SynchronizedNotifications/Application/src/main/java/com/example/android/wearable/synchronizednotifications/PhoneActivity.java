@@ -73,21 +73,13 @@ public class PhoneActivity extends Activity implements GoogleApiClient.Connectio
      * {@link android.app.PendingIntent} will be added to handle the dismissal of notification to
      * be able to remove the mirrored notification on the wearable.
      */
-    private void buildLocalOnlyNotification(String title, String content, int notificationId,
-            boolean withDismissal) {
+    private void buildLocalOnlyNotification(String title, String content, int notificationId, boolean withDismissal) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
         builder.setContentTitle(title)
                 .setContentText(content)
-                .setLocalOnly(true)
+                .setLocalOnly(true)  // make this a local notification
                 .setSmallIcon(R.drawable.ic_launcher);
 
-        if (withDismissal) {
-            Intent dismissIntent = new Intent(Constants.ACTION_DISMISS);
-            dismissIntent.putExtra(Constants.KEY_NOTIFICATION_ID, Constants.BOTH_ID);
-            PendingIntent pendingIntent = PendingIntent
-                    .getService(this, 0, dismissIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            builder.setDeleteIntent(pendingIntent);
-        }
         NotificationManagerCompat.from(this).notify(notificationId, builder.build());
     }
 
@@ -95,7 +87,8 @@ public class PhoneActivity extends Activity implements GoogleApiClient.Connectio
      * Builds a DataItem that on the wearable will be interpreted as a request to show a
      * notification. The result will be a notification that only shows up on the wearable.
      */
-    private void buildWearableOnlyNotification(String title, String content, String path) {
+    private void buildWearableOnlyNotification(String title, String content,
+                                               String path) {
         if (mGoogleApiClient.isConnected()) {
             PutDataMapRequest putDataMapRequest = PutDataMapRequest.create(path);
             putDataMapRequest.getDataMap().putString(Constants.KEY_CONTENT, content);
@@ -106,8 +99,8 @@ public class PhoneActivity extends Activity implements GoogleApiClient.Connectio
                         @Override
                         public void onResult(DataApi.DataItemResult dataItemResult) {
                             if (!dataItemResult.getStatus().isSuccess()) {
-                                Log.e(TAG, "buildWatchOnlyNotification(): Failed to set the data, "
-                                        + "status: " + dataItemResult.getStatus().getStatusCode());
+                                Log.e(TAG, "buildWearableOnlyNotification(): Failed to set the data, " + "status: " +
+                                        dataItemResult.getStatus().getStatusCode());
                             }
                         }
                     });

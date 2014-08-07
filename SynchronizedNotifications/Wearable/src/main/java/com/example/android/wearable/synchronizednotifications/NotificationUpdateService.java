@@ -92,18 +92,14 @@ public class NotificationUpdateService extends WearableListenerService
     public void onDataChanged(DataEventBuffer dataEvents) {
         for (DataEvent dataEvent : dataEvents) {
             if (dataEvent.getType() == DataEvent.TYPE_CHANGED) {
-                DataMap dataMap = DataMapItem.fromDataItem(dataEvent.getDataItem()).getDataMap();
+                DataMap dataMap =
+                        DataMapItem.fromDataItem(dataEvent.getDataItem()).getDataMap();
                 String content = dataMap.getString(Constants.KEY_CONTENT);
                 String title = dataMap.getString(Constants.KEY_TITLE);
                 if (Constants.WATCH_ONLY_PATH.equals(dataEvent.getDataItem().getUri().getPath())) {
                     buildWearableOnlyNotification(title, content, false);
-                } else if (Constants.BOTH_PATH.equals(dataEvent.getDataItem().getUri().getPath())) {
-                    buildWearableOnlyNotification(title, content, true);
                 }
             } else if (dataEvent.getType() == DataEvent.TYPE_DELETED) {
-                if (Log.isLoggable(TAG, Log.DEBUG)) {
-                    Log.d(TAG, "DataItem deleted: " + dataEvent.getDataItem().getUri().getPath());
-                }
                 if (Constants.BOTH_PATH.equals(dataEvent.getDataItem().getUri().getPath())) {
                     // Dismiss the corresponding notification
                     ((NotificationManager) getSystemService(NOTIFICATION_SERVICE))
@@ -117,7 +113,7 @@ public class NotificationUpdateService extends WearableListenerService
      * Builds a simple notification on the wearable.
      */
     private void buildWearableOnlyNotification(String title, String content,
-            boolean withDismissal) {
+                                               boolean withDismissal) {
         Notification.Builder builder = new Notification.Builder(this)
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setContentTitle(title)
@@ -127,7 +123,8 @@ public class NotificationUpdateService extends WearableListenerService
             Intent dismissIntent = new Intent(Constants.ACTION_DISMISS);
             dismissIntent.putExtra(Constants.KEY_NOTIFICATION_ID, Constants.BOTH_ID);
             PendingIntent pendingIntent = PendingIntent
-                    .getService(this, 0, dismissIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    .getService(this, 0, dismissIntent,
+                            PendingIntent.FLAG_UPDATE_CURRENT);
             builder.setDeleteIntent(pendingIntent);
         }
 
