@@ -98,6 +98,8 @@ public class NotificationUpdateService extends WearableListenerService
                 String title = dataMap.getString(Constants.KEY_TITLE);
                 if (Constants.WATCH_ONLY_PATH.equals(dataEvent.getDataItem().getUri().getPath())) {
                     buildWearableOnlyNotification(title, content, false);
+                } else if (Constants.BOTH_PATH.equals(dataEvent.getDataItem().getUri().getPath())) {
+		    buildWearableOnlyNotification(title, content, true);
                 }
             } else if (dataEvent.getType() == DataEvent.TYPE_DELETED) {
                 if (Constants.BOTH_PATH.equals(dataEvent.getDataItem().getUri().getPath())) {
